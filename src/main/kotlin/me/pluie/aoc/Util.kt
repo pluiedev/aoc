@@ -5,7 +5,7 @@ import kotlin.io.path.exists
 import kotlin.io.path.readText
 import kotlin.system.exitProcess
 
-class Challenge(private val input: String): CharSequence by input {
+class Challenge(val input: String): CharSequence by input {
     val results = mutableListOf<Int>()
 
     inline fun submit(action: () -> Int) {
@@ -55,7 +55,7 @@ Actual: $a.
         }
 }
 
-fun Sequence<String>.ints(): Sequence<Int> = map(String::toInt)
+fun Sequence<String>.ints(radix: Int = 10): Sequence<Int> = map { it.toInt(radix) }
 
 fun Sequence<Float>.product(): Float = reduce(Float::times)
 fun Sequence<Double>.product(): Double = reduce(Double::times)
@@ -82,3 +82,6 @@ inline fun p(vararg v: Any) = v.forEach { it.dbg() }
 inline operator fun <T> List<T>.component6(): T {
     return get(5)
 }
+
+infix fun UShort.shl(by: UShort) = (toInt() shl by.toInt()).toUShort()
+infix fun UShort.shr(by: UShort) = (toInt() shr by.toInt()).toUShort()

@@ -5,8 +5,6 @@ import java.util.BitSet
 const val SIZE = 1000
 
 fun main() = challenge(2015, 6) {
-
-
     val cmds = Regex("(turn on|turn off|toggle) (\\d+),(\\d+) through (\\d+),(\\d+)")
         .findAll(this)
         .toList()

@@ -66,6 +66,7 @@ fun Iterable<Int>.product(): Int = reduce(Int::times)
 
 fun CharSequence.blocks(): Sequence<Sequence<String>> =
     splitToSequence("\n\n", "\r\n\r\n").map { it.lineSequence() }
+fun CharSequence.commaList(): Sequence<String> = splitToSequence(",")
 
 inline fun <reified T> Sequence<T>.occurrences() = groupingBy { it }.eachCount()
 

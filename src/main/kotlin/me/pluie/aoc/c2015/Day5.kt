@@ -1,20 +1,30 @@
 package me.pluie.aoc.c2015
 import me.pluie.aoc.*
 
-fun main() = challenge(2015, 3) {
+fun main() = challenge(2015, 5) {
     val strings = lineSequence()
 
     submit {
-        strings.map {
-            it.windowed(2)
-                .fold(0 to false) { (vowels, doubleConsonants), s ->
-                    when (s) {
-//                        "ab", "cd", "pq", "xy" ->
-                    }
-                    vowels to doubleConsonants
-
+        strings.map { s ->
+            s.windowed(2).fold(false) { b, t ->
+                when (t) {
+                    "ab", "cd", "pq", "xy" -> return@map false
                 }
+                b || t[0] == t[1]
+            } && s.count { it in "aeiou" } >= 3
+        }.count { it }
+    }
+    submit {
+        strings.map { s ->
+            val pairs = s.windowed(2).withIndex().toList()
 
-        }.count()
+            pairs.any { pair ->
+                pairs.subList(pair.index, pairs.size)
+                    .any {
+                        it.value == pair.value && it.index >= pair.index + 2
+                    }
+            } &&
+            s.windowed(3).any { it[0] == it[2] }
+        }.count { it }
     }
 }

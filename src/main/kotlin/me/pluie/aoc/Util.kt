@@ -29,7 +29,7 @@ fun challenge(year: Int, day: Int, action: Challenge.() -> Unit) {
             expected.zip(actual).mapIndexed { part, (e, a) ->
                 if (e != a) {
                     System.err.println("""
-Sanity check failed! (case $case, part $part)
+Sanity check failed! (case ${case + 1}, part ${part + 1})
     
 Input:
 $scInput
@@ -66,3 +66,19 @@ fun Iterable<Int>.product(): Int = reduce(Int::times)
 
 fun CharSequence.blocks(): Sequence<Sequence<String>> =
     splitToSequence("\n\n", "\r\n\r\n").map { it.lineSequence() }
+
+inline fun <reified T> Sequence<T>.occurrences() = groupingBy { it }.eachCount()
+
+inline fun <reified T> Iterable<T>.occurrences() = groupingBy { it }.eachCount()
+
+inline fun <reified T> T.dbg() = also(::println)
+inline fun <reified T> Iterable<T>.dbgAll() = forEach { it.dbg() }
+inline fun <reified T> Sequence<T>.dbgAll() = forEach { it.dbg() }
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun p(vararg v: Any) = v.forEach { it.dbg() }
+
+@Suppress("NOTHING_TO_INLINE")
+inline operator fun <T> List<T>.component6(): T {
+    return get(5)
+}

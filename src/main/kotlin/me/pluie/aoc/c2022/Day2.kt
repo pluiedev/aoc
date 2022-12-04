@@ -11,6 +11,6 @@ fun main() = challenge(2022, 2) {
     //
     // oh well! so it goes.
 
-    submit{lines().sumOf{it[2]-'W'+((it[2]-it[0]).mod(3)-1).mod(3)*3}}
-    submit{lines().sumOf{3*it[2].code-263+(it[0]-'A'+(it[2]-'V').mod(3)).mod(3)}}
+    submit{l().sumOf{it[2]-'W'+((it[2]-it[0]).mod(3)-1).mod(3)*3}}
+    submit{l().sumOf{3*it[2].code-263+(it[0]-'A'+(it[2]-'V').mod(3)).mod(3)}}
 }

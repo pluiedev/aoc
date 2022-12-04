@@ -3,7 +3,7 @@ import me.pluie.aoc.*
 
 // TODO
 fun main() = challenge(2015, 8) {
-    val sum = lineSequence().sumOf { s ->
+    val sum = l().sumOf { s ->
         val transformed = s
             .replace(Regex("\"(.*)\""), "$1")
             .replace(Regex("\\\\x([0-9a-f]{2})")) {

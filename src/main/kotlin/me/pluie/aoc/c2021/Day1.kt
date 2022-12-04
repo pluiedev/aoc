@@ -2,7 +2,7 @@ package me.pluie.aoc.c2021
 import me.pluie.aoc.*
 
 fun main() = challenge(2021, 1) {
-    val depths = lineSequence().ints()
+    val depths = l().ints()
 
     submit {
         depths

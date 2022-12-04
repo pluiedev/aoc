@@ -3,9 +3,9 @@ package me.pluie.aoc.c2019
 import me.pluie.aoc.*
 
 fun main() = challenge(2019, 1) {
-    submit { lineSequence().ints().sumOf { it / 3 - 2 } }
+    submit { l(::int).sumOf { it / 3 - 2 } }
     submit {
-        lineSequence().ints().sumOf {
+        l(::int).sumOf {
             var sum = 0
             var mass = it
             while (true) {

@@ -5,7 +5,7 @@ fun main() = challenge(2015, 1) {
     val conv = { c: Char -> if (c == '(') 1 else -1 }
 
     submit {
-        map(conv).sum()
+        m(conv).sum()
     }
     submit {
         runningFold(0) { acc, c -> acc + conv(c) }.indexOf(-1)

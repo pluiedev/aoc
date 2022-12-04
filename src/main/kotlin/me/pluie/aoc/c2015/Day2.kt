@@ -2,8 +2,7 @@ package me.pluie.aoc.c2015
 import me.pluie.aoc.*
 
 fun main() = challenge(2015, 2) {
-    val dims = lineSequence()
-        .map { it.splitToSequence('x').ints().toList() }
+    val dims = l { it.split('x').ints() }
 
     submit {
         dims.sumOf { (h, w, l) ->

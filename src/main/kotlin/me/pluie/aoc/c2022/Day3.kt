@@ -6,19 +6,20 @@ fun main() = challenge(2022, 3) {
         c - 'a'
     } else {
         c - 'A' + 26
+
     }
 
     submit {
-        lineSequence().flatMap {
-            val (a, b) = it.splitInTwain().map { s -> s.toSet() }
+        l().fm {
+            val (a, b) = it.splitInTwain()
 
-            a.intersect(b).map(::priority).asSequence()
+            (a % b).m(::priority)
         }.sum()
     }
     submit {
-        lineSequence().chunked(3).sumOf {
-            val (a, b, c) = it.map { s -> s.toSet() }
-            priority(a.intersect(b).intersect(c).first())
+        l().chunked(3).sumOf {
+            val (a, b, c) = it
+            priority((a % b % c).first())
         }
     }
 }

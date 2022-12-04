@@ -55,20 +55,37 @@ Actual: $a.
         }
 }
 
-fun Sequence<String>.ints(radix: Int = 10): Sequence<Int> = map { it.toInt(radix) }
 
-fun Sequence<Float>.product(): Float = reduce(Float::times)
-fun Sequence<Double>.product(): Double = reduce(Double::times)
-fun Sequence<Int>.product(): Int = reduce(Int::times)
+fun int(s: String): Int = s.toInt()
+@JvmName("int2")
+fun String.int(): Int = toInt()
+fun Iterable<String>.ints(radix: Int = 10): List<Int> = map { it.toInt(radix) }
+
 fun Iterable<Float>.product(): Float = reduce(Float::times)
 fun Iterable<Double>.product(): Double = reduce(Double::times)
 fun Iterable<Int>.product(): Int = reduce(Int::times)
 
-fun CharSequence.blocks(): Sequence<Sequence<String>> =
-    splitToSequence("\n\n", "\r\n\r\n").map { it.lineSequence() }
-fun CharSequence.commaList(): Sequence<String> = splitToSequence(",")
+// shortcuts
+fun <T, R> Iterable<T>.m(f: (T) -> R) = map(f)
+fun <T, R> Iterable<T>.fm(f: (T) -> Iterable<R>) = flatMap(f)
+fun <R> CharSequence.m(f: (Char) -> R) = map(f)
 
-inline fun <reified T> Sequence<T>.occurrences() = groupingBy { it }.eachCount()
+
+operator fun <T> Iterable<T>.rem(other: Iterable<T>): Set<T> = this intersect other.toSet()
+operator fun String.rem(other: String): Set<Char> = this.toSet() intersect other.toSet()
+operator fun Set<Char>.rem(other: String): Set<Char> = this intersect other.toSet()
+
+fun CharSequence.l(): List<String> = lines()
+fun <R> CharSequence.l(f: (String) -> R): List<R> = l().map(f)
+
+fun CharSequence.blocks(): List<List<String>> =
+    split("\n\n", "\r\n\r\n").map { it.l() }
+fun <R> CharSequence.blocks(f: (List<String>) -> R): List<R> = blocks().map(f)
+fun CharSequence.csv(): List<String> = split(",")
+fun <R> CharSequence.csv(f: (String) -> R): List<R> = csv().map(f)
+fun CharSequence.hyphens(): List<String> = split("-")
+fun <R> CharSequence.hyphens(f: (String) -> R): List<R> = hyphens().map(f)
+
 
 inline fun <reified T> Iterable<T>.occurrences() = groupingBy { it }.eachCount()
 
@@ -86,3 +103,19 @@ inline operator fun <T> List<T>.component6(): T {
 
 infix fun UShort.shl(by: UShort) = (toInt() shl by.toInt()).toUShort()
 infix fun UShort.shr(by: UShort) = (toInt() shr by.toInt()).toUShort()
+
+
+fun CharSequence.split2(vararg delimiters: String): Pair<String, String> {
+    val (a, b) = split(*delimiters, limit = 2)
+    return a to b
+}
+fun CharSequence.splitAt(idx: Int): Pair<String, String> = substring(0..idx) to substring(idx)
+fun CharSequence.splitInTwain(): Pair<String, String> = splitAt(length / 2)
+
+// pair bullshit
+
+fun <T> Pair<T, T>.s(): Sequence<T> = listOf(first, second).asSequence()
+inline fun <T, R> Pair<T, T>.m(f: (T) -> R): Pair<R, R> = f(first) to f(second)
+
+fun <T> Triple<T, T, T>.s(): Sequence<T> = listOf(first, second, third).asSequence()
+inline fun <T, R> Triple<T, T, T>.m(f: (T) -> R): Triple<R, R, R> = Triple(f(first), f(second), f(third))

@@ -2,9 +2,9 @@ package me.pluie.aoc.c2021
 import me.pluie.aoc.*
 
 fun main() = challenge(2021, 2) {
-    val cmds = lineSequence().map {
+    val cmds = l {
         val (dir, mag) = it.split(' ')
-        dir to mag.toInt()
+        dir to mag.int()
     }
 
     submit {

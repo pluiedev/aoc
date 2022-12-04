@@ -3,7 +3,7 @@ package me.pluie.aoc.c2019
 import me.pluie.aoc.*
 
 fun main() = challenge(2019, 2) {
-    val input = commaList().ints()
+    val input = csv(::int)
 
     fun evaluate(noun: Int, verb: Int): Int {
         var pc = 0

@@ -2,20 +2,19 @@ package me.pluie.aoc.c2015
 import me.pluie.aoc.*
 
 fun main() = challenge(2015, 5) {
-    val strings = lineSequence()
 
     submit {
-        strings.map { s ->
+        l { s ->
             s.windowed(2).fold(false) { b, t ->
                 when (t) {
-                    "ab", "cd", "pq", "xy" -> return@map false
+                    "ab", "cd", "pq", "xy" -> return@l false
                 }
                 b || t[0] == t[1]
             } && s.count { it in "aeiou" } >= 3
         }.count { it }
     }
     submit {
-        strings.map { s ->
+        l { s ->
             val pairs = s.windowed(2).withIndex().toList()
 
             pairs.any { pair ->

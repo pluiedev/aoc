@@ -24,7 +24,10 @@ fun main() = challenge(2017, 5) {
         var pos = 0
         while (pos < i.size) {
             val v = i[pos]
-            i[pos] += if (v >= 3) -1 else 1
+            if (v >= 3)
+                i[pos]--
+            else
+                i[pos]++
             pos += v
             tick++
         }

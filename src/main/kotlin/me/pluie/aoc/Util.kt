@@ -5,12 +5,14 @@ import kotlin.io.path.exists
 import kotlin.io.path.readText
 import kotlin.system.exitProcess
 
-class Challenge(val input: String): CharSequence by input {
+data class Challenge(val input: String): CharSequence by input {
     val results = mutableListOf<Int>()
 
     inline fun submit(action: () -> Int) {
         results.add(action())
     }
+
+    override fun toString() = input
 }
 
 fun challenge(year: Int, day: Int, action: Challenge.() -> Unit) {
@@ -56,9 +58,9 @@ Actual: $a.
 }
 
 
-fun int(s: String, radix: Int = 10): Int = s.toInt(radix)
+fun int(s: String, radix: Int = 10): Int = s.trim().toInt(radix)
 @JvmName("int2")
-fun CharSequence.int(radix: Int = 10): Int = toString().toInt(radix)
+fun CharSequence.int(radix: Int = 10): Int = toString().trim().toInt(radix)
 fun Iterable<String>.ints(radix: Int = 10): List<Int> = map { it.toInt(radix) }
 fun Sequence<String>.ints(radix: Int = 10): Sequence<Int> = map { it.toInt(radix) }
 

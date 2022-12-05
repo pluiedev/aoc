@@ -158,7 +158,4 @@ fun Iterable<String>.join() = joinToString("")
 @JvmName("joinString")
 fun Sequence<String>.join() = joinToString("")
 
-
-inline fun <T> MutableList<T>.getOrAdd(idx: Int, getter: () -> T): T
-    = this.getOrNull(idx) ?:
-    getter().also { this.add(idx, it) }
+fun <T> Sequence<T>.cycle() = sequence { while (true) yieldAll(this@cycle) }

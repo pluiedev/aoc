@@ -109,6 +109,7 @@ inline fun <T: Comparable<T>> Iterable<T>.minmax(): Pair<T, T>? {
     return min to max
 }
 inline fun <reified T> Iterable<T>.occurrences() = groupingBy { it }.eachCount()
+inline fun <reified T> Sequence<T>.occurrences() = groupingBy { it }.eachCount()
 
 inline fun <reified T> T.dbg() = also(::println)
 inline fun <reified T> Iterable<T>.dbgAll() = forEach { it.dbg() }
@@ -141,6 +142,8 @@ inline fun <T, R> Triple<T, T, T>.m(f: (T) -> R): Triple<R, R, R> = Triple(f(fir
 
 infix fun <T> Iterable<T>.cartesian(o: Iterable<T>) = fm { f -> o.m { e -> e to f } }
 infix fun <T> Sequence<T>.cartesian(o: Sequence<T>) = fm { f -> o.m { e -> e to f } }
+fun <T> Iterable<T>.selfCartesian() = cartesian(this)
+fun <T> Sequence<T>.selfCartesian() = cartesian(this)
 
 fun <T> Sequence<T>.toL() = toList()
 fun <T> Iterable<T>.toS() = asSequence()

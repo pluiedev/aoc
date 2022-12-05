@@ -3,7 +3,7 @@ import me.pluie.aoc.*
 
 fun main() = challenge(2021, 2) {
     val cmds = l {
-        val (dir, mag) = it.split(' ')
+        val (dir, mag) = it.spaces().toL()
         dir to mag.int()
     }
 

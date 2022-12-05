@@ -2,7 +2,7 @@ package me.pluie.aoc.c2022
 import me.pluie.aoc.*
 
 fun main() = challenge(2022, 4) {
-    val pairs = l { it.csv().fm { s -> s.hyphens().ints() } }
+    val pairs = l { it.csv().fm { s -> s.hyphens(::int) }.toL() }
 
     submit {
         pairs.count { (a, b, c, d) ->

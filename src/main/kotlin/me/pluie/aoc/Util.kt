@@ -56,10 +56,11 @@ Actual: $a.
 }
 
 
-fun int(s: String): Int = s.toInt()
+fun int(s: String, radix: Int = 10): Int = s.toInt(radix)
 @JvmName("int2")
-fun String.int(): Int = toInt()
+fun CharSequence.int(radix: Int = 10): Int = toString().toInt(radix)
 fun Iterable<String>.ints(radix: Int = 10): List<Int> = map { it.toInt(radix) }
+fun Sequence<String>.ints(radix: Int = 10): Sequence<Int> = map { it.toInt(radix) }
 
 fun Iterable<Float>.product(): Float = reduce(Float::times)
 fun Iterable<Double>.product(): Double = reduce(Double::times)
@@ -68,6 +69,8 @@ fun Iterable<Int>.product(): Int = reduce(Int::times)
 // shortcuts
 fun <T, R> Iterable<T>.m(f: (T) -> R) = map(f)
 fun <T, R> Iterable<T>.fm(f: (T) -> Iterable<R>) = flatMap(f)
+fun <T, R> Sequence<T>.m(f: (T) -> R) = map(f)
+fun <T, R> Sequence<T>.fm(f: (T) -> Sequence<R>) = flatMap(f)
 fun <R> CharSequence.m(f: (Char) -> R) = map(f)
 
 
@@ -75,18 +78,34 @@ operator fun <T> Iterable<T>.rem(other: Iterable<T>): Set<T> = this intersect ot
 operator fun String.rem(other: String): Set<Char> = this.toSet() intersect other.toSet()
 operator fun Set<Char>.rem(other: String): Set<Char> = this intersect other.toSet()
 
-fun CharSequence.l(): List<String> = lines()
-fun <R> CharSequence.l(f: (String) -> R): List<R> = l().map(f)
+fun CharSequence.l(): Sequence<String> = lineSequence()
+fun <R> CharSequence.l(f: (String) -> R): Sequence<R> = l().m(f)
 
-fun CharSequence.blocks(): List<List<String>> =
-    split("\n\n", "\r\n\r\n").map { it.l() }
-fun <R> CharSequence.blocks(f: (List<String>) -> R): List<R> = blocks().map(f)
-fun CharSequence.csv(): List<String> = split(",")
-fun <R> CharSequence.csv(f: (String) -> R): List<R> = csv().map(f)
-fun CharSequence.hyphens(): List<String> = split("-")
-fun <R> CharSequence.hyphens(f: (String) -> R): List<R> = hyphens().map(f)
+fun CharSequence.blocks(): Sequence<Sequence<String>> =
+    splitToSequence("\n\n", "\r\n\r\n").m { it.l() }
+fun <R> CharSequence.blocks(f: (Sequence<String>) -> R): Sequence<R> = blocks().m(f)
+fun CharSequence.csv(): Sequence<String> = splitToSequence(",")
+fun <R> CharSequence.csv(f: (String) -> R): Sequence<R> = csv().m(f)
+fun CharSequence.hyphens(): Sequence<String> = splitToSequence("-")
+fun <R> CharSequence.hyphens(f: (String) -> R): Sequence<R> = hyphens().m(f)
+fun CharSequence.spaces(): Sequence<String> = splitToSequence(" ")
+fun <R> CharSequence.spaces(f: (String) -> R): Sequence<R> = spaces().m(f)
+fun CharSequence.ws(): Sequence<String> = splitToSequence(Regex("\\s+"))
+fun <R> CharSequence.ws(f: (String) -> R): Sequence<R> = ws().m(f)
 
 
+inline fun <T: Comparable<T>> Iterable<T>.minmax(): Pair<T, T>? {
+    val iterator = iterator()
+    if (!iterator.hasNext()) return null
+    var min = iterator.next()
+    var max = min
+    while (iterator.hasNext()) {
+        val e = iterator.next()
+        if (min > e) min = e
+        if (max < e) max = e
+    }
+    return min to max
+}
 inline fun <reified T> Iterable<T>.occurrences() = groupingBy { it }.eachCount()
 
 inline fun <reified T> T.dbg() = also(::println)
@@ -104,13 +123,10 @@ inline operator fun <T> List<T>.component6(): T {
 infix fun UShort.shl(by: UShort) = (toInt() shl by.toInt()).toUShort()
 infix fun UShort.shr(by: UShort) = (toInt() shr by.toInt()).toUShort()
 
-
-fun CharSequence.split2(vararg delimiters: String): Pair<String, String> {
-    val (a, b) = split(*delimiters, limit = 2)
-    return a to b
-}
 fun CharSequence.splitAt(idx: Int): Pair<String, String> = substring(0..idx) to substring(idx)
 fun CharSequence.splitInTwain(): Pair<String, String> = splitAt(length / 2)
+fun <T> List<T>.splitAt(idx: Int): Pair<List<T>, List<T>> = subList(0, idx) to subList(idx, size)
+fun <T> List<T>.splitInTwain(): Pair<List<T>, List<T>> = splitAt(size / 2)
 
 // pair bullshit
 
@@ -119,3 +135,10 @@ inline fun <T, R> Pair<T, T>.m(f: (T) -> R): Pair<R, R> = f(first) to f(second)
 
 fun <T> Triple<T, T, T>.s(): Sequence<T> = listOf(first, second, third).asSequence()
 inline fun <T, R> Triple<T, T, T>.m(f: (T) -> R): Triple<R, R, R> = Triple(f(first), f(second), f(third))
+
+
+infix fun <T> Iterable<T>.cartesian(o: Iterable<T>) = fm { f -> o.m { e -> e to f } }
+infix fun <T> Sequence<T>.cartesian(o: Sequence<T>) = fm { f -> o.m { e -> e to f } }
+
+fun <T> Sequence<T>.toL() = toList()
+fun <T> Iterable<T>.toS() = asSequence()

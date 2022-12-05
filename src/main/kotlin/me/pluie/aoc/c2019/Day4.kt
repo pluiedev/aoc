@@ -3,7 +3,7 @@ package me.pluie.aoc.c2019
 import me.pluie.aoc.*
 
 fun main() = challenge(2019, 4) {
-    val (f, t) = hyphens(::int)
+    val (f, t) = hyphens(::int).toL()
 
     // make sure it's in range and 6 digits long.
     val from = f.coerceAtLeast(100_000)

@@ -6,14 +6,13 @@ fun main() = challenge(2022, 3) {
         c - 'a'
     } else {
         c - 'A' + 26
-
     }
 
     submit {
         l().fm {
             val (a, b) = it.splitInTwain()
 
-            (a % b).m(::priority)
+            (a % b).m(::priority).toS()
         }.sum()
     }
     submit {

@@ -1,53 +1,54 @@
 package me.pluie.aoc
 
 import kotlin.io.path.Path
+import kotlin.io.path.exists
 import kotlin.io.path.readText
+import kotlin.system.exitProcess
 
-data class Challenge<T>(val input: String): CharSequence by input {
-    val results = mutableListOf<T>()
+data class Challenge(val input: String): CharSequence by input {
+    val results = mutableListOf<String>()
 
-    inline fun submit(action: () -> T) {
-        results.add(action())
+    inline fun <T> submit(action: () -> T) {
+        results.add(action().toString())
     }
 
     override fun toString() = input
 }
 
-fun <T: Comparable<T>> challenge(year: Int, day: Int, action: Challenge<T>.() -> Unit) {
-//    val scPath = Path("inputs/$year/sc${day}.txt")
-//    if (scPath.exists()) {
-//        val text = scPath.readText()
-//
-//        text.split("\n%\n").forEachIndexed { case, input ->
-//            val (scInput, scExpectedResults) = input.split("\n#\n", limit = 2)
-//
-//            val expected = scExpectedResults
-//                .split("\n")
-//                .map(String::toInt)
-//            val actual = Challenge<T>(scInput).apply(action).results
-//
-//            expected.zip(actual).mapIndexed { part, (e, a) ->
-//                if (e != a) {
-//                    System.err.println("""
-//Sanity check failed! (case ${case + 1}, part ${part + 1})
-//
-//Input:
-//$scInput
-//
-//Expected: $e;
-//Actual: $a.
-//                    """)
-//                    exitProcess(1)
-//                }
-//            }
-//        }
-//
-//        println("Sanity checks passed!")
-//    }
+fun challenge(year: Int, day: Int, action: Challenge.() -> Unit) {
+    val scPath = Path("inputs/$year/sc${day}.txt")
+    if (scPath.exists()) {
+        val text = scPath.readText()
+
+        text.split("\n%\n").forEachIndexed { case, input ->
+            val (scInput, scExpectedResults) = input.split("\n#\n", limit = 2)
+
+            val expected = scExpectedResults
+                .split("\n")
+            val actual = Challenge(scInput).apply(action).results
+
+            expected.zip(actual).mapIndexed { part, (e, a) ->
+                if (e != a) {
+                    System.err.println("""
+Sanity check failed! (case ${case + 1}, part ${part + 1})
+
+Input:
+$scInput
+
+Expected: $e;
+Actual: $a.
+                    """)
+                    exitProcess(1)
+                }
+            }
+        }
+
+        println("Sanity checks passed!")
+    }
 
     Path("inputs/$year/day${day}.txt")
         .readText()
-        .let { Challenge<T>(it) }
+        .let(::Challenge)
         .apply(action)
         .results
         .forEachIndexed { i, v ->
@@ -108,6 +109,7 @@ inline fun <T: Comparable<T>> Iterable<T>.minmax(): Pair<T, T>? {
 }
 inline fun <reified T> Iterable<T>.occurrences() = groupingBy { it }.eachCount()
 inline fun <reified T> Sequence<T>.occurrences() = groupingBy { it }.eachCount()
+fun CharSequence.occurrences() = groupingBy { it }.eachCount()
 
 inline fun <reified T> T.dbg() = also(::println)
 inline fun <reified T> Iterable<T>.dbgAll() = forEach { it.dbg() }
@@ -145,6 +147,7 @@ fun <T> Sequence<T>.selfCartesian() = cartesian(this)
 
 fun <T> Sequence<T>.toL() = toList()
 fun <T> Iterable<T>.toS() = asSequence()
+fun CharSequence.toS() = asSequence()
 
 fun <T> List<T>.copy() = toMutableList()
 @JvmName("copy2")

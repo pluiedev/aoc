@@ -1,55 +1,53 @@
 package me.pluie.aoc
 
 import kotlin.io.path.Path
-import kotlin.io.path.exists
 import kotlin.io.path.readText
-import kotlin.system.exitProcess
 
-data class Challenge(val input: String): CharSequence by input {
-    val results = mutableListOf<Int>()
+data class Challenge<T>(val input: String): CharSequence by input {
+    val results = mutableListOf<T>()
 
-    inline fun submit(action: () -> Int) {
+    inline fun submit(action: () -> T) {
         results.add(action())
     }
 
     override fun toString() = input
 }
 
-fun challenge(year: Int, day: Int, action: Challenge.() -> Unit) {
-    val scPath = Path("inputs/$year/sc${day}.txt")
-    if (scPath.exists()) {
-        val text = scPath.readText()
-
-        text.split("\n%\n").forEachIndexed { case, input ->
-            val (scInput, scExpectedResults) = input.split("\n#\n", limit = 2)
-
-            val expected = scExpectedResults
-                .split("\n")
-                .map(String::toInt)
-            val actual = Challenge(scInput).apply(action).results
-
-            expected.zip(actual).mapIndexed { part, (e, a) ->
-                if (e != a) {
-                    System.err.println("""
-Sanity check failed! (case ${case + 1}, part ${part + 1})
-    
-Input:
-$scInput
-
-Expected: $e;
-Actual: $a.
-                    """)
-                    exitProcess(1)
-                }
-            }
-        }
-
-        println("Sanity checks passed!")
-    }
+fun <T: Comparable<T>> challenge(year: Int, day: Int, action: Challenge<T>.() -> Unit) {
+//    val scPath = Path("inputs/$year/sc${day}.txt")
+//    if (scPath.exists()) {
+//        val text = scPath.readText()
+//
+//        text.split("\n%\n").forEachIndexed { case, input ->
+//            val (scInput, scExpectedResults) = input.split("\n#\n", limit = 2)
+//
+//            val expected = scExpectedResults
+//                .split("\n")
+//                .map(String::toInt)
+//            val actual = Challenge<T>(scInput).apply(action).results
+//
+//            expected.zip(actual).mapIndexed { part, (e, a) ->
+//                if (e != a) {
+//                    System.err.println("""
+//Sanity check failed! (case ${case + 1}, part ${part + 1})
+//
+//Input:
+//$scInput
+//
+//Expected: $e;
+//Actual: $a.
+//                    """)
+//                    exitProcess(1)
+//                }
+//            }
+//        }
+//
+//        println("Sanity checks passed!")
+//    }
 
     Path("inputs/$year/day${day}.txt")
         .readText()
-        .let(::Challenge)
+        .let { Challenge<T>(it) }
         .apply(action)
         .results
         .forEachIndexed { i, v ->
@@ -147,3 +145,20 @@ fun <T> Sequence<T>.selfCartesian() = cartesian(this)
 
 fun <T> Sequence<T>.toL() = toList()
 fun <T> Iterable<T>.toS() = asSequence()
+
+fun <T> List<T>.copy() = toMutableList()
+@JvmName("copy2")
+fun <T> List<List<T>>.copy() = map { it.toMutableList() }.toMutableList()
+
+
+fun Iterable<Char>.join() = joinToString("")
+fun Sequence<Char>.join() = joinToString("")
+@JvmName("joinString")
+fun Iterable<String>.join() = joinToString("")
+@JvmName("joinString")
+fun Sequence<String>.join() = joinToString("")
+
+
+inline fun <T> MutableList<T>.getOrAdd(idx: Int, getter: () -> T): T
+    = this.getOrNull(idx) ?:
+    getter().also { this.add(idx, it) }

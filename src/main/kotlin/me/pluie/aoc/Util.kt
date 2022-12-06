@@ -11,6 +11,12 @@ data class Challenge(val input: String): CharSequence by input {
     inline fun <T> submit(action: () -> T) {
         results.add(action().toString())
     }
+    inline fun <T> Iterable<T>.massSubmit() {
+        mapTo(results) { it.toString() }
+    }
+    inline fun <T> Sequence<T>.massSubmit() {
+        mapTo(results) { it.toString() }
+    }
 
     override fun toString() = input
 }

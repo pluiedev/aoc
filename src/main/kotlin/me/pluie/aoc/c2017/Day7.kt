@@ -2,24 +2,25 @@ package me.pluie.aoc.c2017
 
 import me.pluie.aoc.*
 
-// TODO
-data class Program(
-    val name: String,
-    val weight: Int,
-    var parent: Program? = null,
-    val children: MutableList<Program> = mutableListOf()
-) {
-    val totalWeight: Int by lazy { weight + children.sumOf { it.totalWeight } }
-
-    fun calcRequiredBalance(): Int {
-        val expected = children.firstOrNull()?.totalWeight ?: return 0
-        val rulebreaker = children.find { it.totalWeight != expected } ?: return 0
-        val calibrated = expected - rulebreaker.children.sumOf { it.totalWeight }
-        return calibrated
-    }
-}
-
 fun main() = challenge(2017, 7) {
+    // TODO
+    data class Program(
+        val name: String,
+        val weight: Int,
+        var parent: Program? = null,
+        val children: MutableList<Program> = mutableListOf()
+    ) {
+        val totalWeight: Int by lazy { weight + children.sumOf { it.totalWeight } }
+
+        fun calcRequiredBalance(): Int {
+            val expected = children.firstOrNull()?.totalWeight ?: return 0
+            val rulebreaker = children.find { it.totalWeight != expected } ?: return 0
+            val calibrated = expected - rulebreaker.children.sumOf { it.totalWeight }
+            return calibrated
+        }
+    }
+
+
     val nodes = mutableMapOf<String, Program>()
     val structure = l {
         val result = Regex("([a-z]+) \\((\\d+)\\)(?: -> (.+))?")

@@ -162,3 +162,5 @@ fun Iterable<String>.join() = joinToString("")
 fun Sequence<String>.join() = joinToString("")
 
 fun <T> Sequence<T>.cycle() = sequence { while (true) yieldAll(this@cycle) }
+
+fun CharSequence.match(r: String) = Regex(r).find(this)?.destructured

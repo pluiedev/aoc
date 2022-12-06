@@ -94,6 +94,11 @@ fun <R> CharSequence.spaces(f: (String) -> R): Sequence<R> = spaces().m(f)
 fun CharSequence.ws(): Sequence<String> = splitToSequence(Regex("\\s+"))
 fun <R> CharSequence.ws(f: (String) -> R): Sequence<R> = ws().m(f)
 
+fun CharSequence.split2(vararg delimiters: String): Pair<String, String>
+    = split(*delimiters, limit = 2).let { it[0] to it[1] }
+fun <R> CharSequence.split2(vararg delimiters: String, f: (String) -> R): Pair<R, R>
+    = split(*delimiters, limit = 2).let { f(it[0]) to f(it[1]) }
+
 
 inline fun <T: Comparable<T>> Iterable<T>.minmax(): Pair<T, T>? {
     val iterator = iterator()

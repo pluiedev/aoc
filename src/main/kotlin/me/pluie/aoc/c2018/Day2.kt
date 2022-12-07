@@ -9,7 +9,7 @@ fun main() = challenge(2018, 2) {
     }
     submit {
         l { it.toMutableList() }
-            .selfCartesian()
+            .cartesianSquare()
             .m { (a, b) ->
                 a to a
                     .zip(b)

@@ -150,7 +150,7 @@ inline fun <T, R> Pair<T, T>.m(f: (T) -> R): Pair<R, R> = f(first) to f(second)
 fun <T> Triple<T, T, T>.s(): Sequence<T> = listOf(first, second, third).asSequence()
 inline fun <T, R> Triple<T, T, T>.m(f: (T) -> R): Triple<R, R, R> = Triple(f(first), f(second), f(third))
 
-
+// 2-fold cartesian products
 infix fun <T> Iterable<T>.cartesian(o: Iterable<T>) = fm { f -> o.m { e -> e to f } }
 infix fun <T> Sequence<T>.cartesian(o: Sequence<T>) = fm { f -> o.m { e -> e to f } }
 // 3-fold cartesian products
@@ -158,10 +158,11 @@ fun <T> Iterable<T>.cartesian3(a: Iterable<T>, b: Iterable<T>)
     = fm { x -> a.fm { y -> b.m { z -> Triple(x, y, z) }} }
 fun <T> Sequence<T>.cartesian3(a: Sequence<T>, b: Sequence<T>)
     = fm { x -> a.fm { y -> b.m { z -> Triple(x, y, z) }} }
-fun <T> Iterable<T>.selfCartesian() = cartesian(this)
-fun <T> Sequence<T>.selfCartesian() = cartesian(this)
-fun <T> Iterable<T>.selfCartesian3() = cartesian3(this, this)
-fun <T> Sequence<T>.selfCartesian3() = cartesian3(this, this)
+
+fun <T> Iterable<T>.cartesianSquare() = cartesian(this)
+fun <T> Sequence<T>.cartesianSquare() = cartesian(this)
+fun <T> Iterable<T>.cartesianCube() = cartesian3(this, this)
+fun <T> Sequence<T>.cartesianCube() = cartesian3(this, this)
 
 fun <T> Sequence<T>.toL() = toList()
 fun <T> Iterable<T>.toS() = asSequence()

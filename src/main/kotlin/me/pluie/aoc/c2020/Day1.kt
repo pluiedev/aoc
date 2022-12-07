@@ -10,8 +10,7 @@ fun main() = challenge(2020, 1) {
         a * b
     }
     submit {
-        val (a, b, c) = nums.fm { a -> nums.fm { b -> nums.m { c -> Triple(a, b, c) } } }
-            .find { (a, b, c) -> a + b + c == 2020 }!!
+        val (a, b, c) = nums.selfCartesian3().find { (a, b, c) -> a + b + c == 2020 }!!
         a * b * c
     }
 }

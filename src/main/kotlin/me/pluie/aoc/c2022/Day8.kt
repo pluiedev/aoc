@@ -13,10 +13,7 @@ fun main() = challenge(2022, 8) {
     submit {
         trees.maxOf { p ->
             val t = p.value
-            p.norths().takeUntil { it.value >= t }.count() *
-            p.souths().takeUntil { it.value >= t }.count() *
-            p.easts().takeUntil { it.value >= t }.count() *
-            p.wests().takeUntil { it.value >= t }.count()
+            p.cardinals().productOf { dir -> dir.takeUntil { it.value >= t }.count() }
         }
     }
 }

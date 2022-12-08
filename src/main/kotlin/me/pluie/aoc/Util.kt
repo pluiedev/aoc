@@ -69,12 +69,6 @@ fun CharSequence.int(radix: Int = 10): Int = toString().trim().toInt(radix)
 fun Iterable<String>.ints(radix: Int = 10): List<Int> = map { it.toInt(radix) }
 fun Sequence<String>.ints(radix: Int = 10): Sequence<Int> = map { it.toInt(radix) }
 
-fun Iterable<Float>.product(): Float = reduce(Float::times)
-fun Iterable<Double>.product(): Double = reduce(Double::times)
-fun Iterable<Int>.product(): Int = reduce(Int::times)
-fun Sequence<Float>.product(): Float = reduce(Float::times)
-fun Sequence<Double>.product(): Double = reduce(Double::times)
-fun Sequence<Int>.product(): Int = reduce(Int::times)
 
 // shortcuts
 fun <T, R> Iterable<T>.m(f: (T) -> R) = map(f)

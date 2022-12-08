@@ -186,3 +186,27 @@ fun Sequence<String>.join() = joinToString("")
 fun <T> Sequence<T>.cycle() = sequence { while (true) yieldAll(this@cycle) }
 
 fun CharSequence.match(r: String) = Regex(r).find(this)?.destructured
+fun <R> CharSequence.match(r: String, transform: (MatchResult.Destructured) -> R) =
+    match(r)?.let(transform)
+
+
+inline fun <T> Iterable<T>.takeUntil(
+    predicate: (T) -> Boolean
+): List<T> {
+    var shouldContinue = true
+    return takeWhile {
+        val result = shouldContinue
+        shouldContinue = !predicate(it)
+        result
+    }
+}
+inline fun <T> Sequence<T>.takeUntil(
+    crossinline predicate: (T) -> Boolean
+): Sequence<T> {
+    var shouldContinue = true
+    return takeWhile {
+        val result = shouldContinue
+        shouldContinue = !predicate(it)
+        result
+    }
+}

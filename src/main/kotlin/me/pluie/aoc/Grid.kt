@@ -39,12 +39,8 @@ data class Grid<T>(
         fun southeasts(): Sequence<Pos<T>> =
             (y + 1 until grid.height).toS().zip((x + 1 until grid.width).toS(), grid::get)
 
-        fun cardinals(): Sequence<Sequence<Pos<T>>> = sequence {
-            yield(norths())
-            yield(souths())
-            yield(wests())
-            yield(easts())
-        }
+        fun cardinals(): Sequence<Sequence<Pos<T>>> = sequenceOf(norths(), easts(), souths(), wests())
+        fun ordinals(): Sequence<Sequence<Pos<T>>> = sequenceOf(northeasts(), southeasts(), southwests(), northwests())
     }
 }
 

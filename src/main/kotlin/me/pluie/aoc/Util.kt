@@ -1,8 +1,10 @@
 package me.pluie.aoc
 
+import java.util.*
 import kotlin.io.path.Path
 import kotlin.io.path.exists
 import kotlin.io.path.readText
+import kotlin.streams.asSequence
 import kotlin.system.exitProcess
 
 data class Challenge(val input: String): CharSequence by input {
@@ -164,6 +166,9 @@ fun <T> Sequence<T>.cartesianCube() = cartesian3(this, this)
 fun <T> Sequence<T>.toL() = toList()
 fun <T> Iterable<T>.toS() = asSequence()
 fun CharSequence.toS() = asSequence()
+fun BitSet.toS() = stream().asSequence()
+// java sucks
+fun BitSet.copy() = clone() as BitSet
 
 fun <T> List<T>.copy() = toMutableList()
 @JvmName("copy2")

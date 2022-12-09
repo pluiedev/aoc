@@ -6,9 +6,10 @@ fun main() = challenge(2017, 8) {
     data class Command(val name: String, val op: String, val by: Int, val cmpVar: String, val cmp: String, val cmpBy: Int)
 
     val cmds = l {
-        val (name, op, by, cmpVar, cmp, cmpBy) =
-            it.match("([a-z]+) (dec|inc) (-?\\d+) if ([a-z]+) ([=!]=|[<>]=?) (-?\\d+)")!!
-        Command(name, op, by.toInt(), cmpVar, cmp, cmpBy.toInt())
+        it.match("([a-z]+) (dec|inc) (-?\\d+) if ([a-z]+) ([=!]=|[<>]=?) (-?\\d+)")
+        { (name, op, by, cmpVar, cmp, cmpBy) ->
+            Command(name, op, by.toInt(), cmpVar, cmp, cmpBy.toInt())
+        }!!
     }
 
     val regs = mutableMapOf<String, Int>()

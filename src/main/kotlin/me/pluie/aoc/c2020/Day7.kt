@@ -21,8 +21,9 @@ fun main() = challenge(2020, 7) {
             emptyList()
         else
             listRaw.splitToSequence(", ").m { s ->
-                val (n, subtype) = s.match("(\\d+) (.+) bags?")!!
-                n.int() to subtype
+                s.match("(\\d+) (.+) bags?") { (n, subtype) ->
+                    n.int() to subtype
+                }!!
             }.toL()
 
         type to Bag(bags, list)

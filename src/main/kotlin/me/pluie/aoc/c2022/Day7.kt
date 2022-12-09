@@ -28,8 +28,8 @@ fun main() = challenge(2022, 7) {
     val fs = mutableMapOf<String, MutableList<Node>>()
     val cwd = mutableListOf<String>()
 
-    l().forEach {
-        val cmdMatch = it.match("\\$ (?:(cd) (/|[a-z]+|\\.\\.)|ls)")
+    l().forEach { l ->
+        val cmdMatch = l.match("\\$ (?:(cd) (/|[a-z]+|\\.\\.)|ls)")
         if (cmdMatch != null) {
             val (cd, path) = cmdMatch
 
@@ -39,7 +39,7 @@ fun main() = challenge(2022, 7) {
                 else -> cwd.add(path)
             }
         } else {
-            val (typeOrSize, name) = it.split(" ", limit = 2)
+            val (typeOrSize, name) = l.split(" ", limit = 2)
             val path = cwd.joinToString("/", prefix = "/")
             val list = fs.getOrPut(path) { mutableListOf() }
 

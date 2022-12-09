@@ -7,8 +7,11 @@ fun main() = challenge(2018, 3) {
     val grid = ByteArray(1000 * 1000) { 0 }
 
     val claims = l {
-        val (n, x, y, w, h) = it.match("#(\\d+) @ (\\d+),(\\d+): (\\d+)x(\\d+)")!!.toList().ints()
-        Claim(n, x, y, w, h)
+        it.match("#(\\d+) @ (\\d+),(\\d+): (\\d+)x(\\d+)")!!
+            .toList()
+            .ints().let {(n, x, y, w, h) ->
+                Claim(n, x, y, w, h)
+            }
     }
 
     claims.forEach {

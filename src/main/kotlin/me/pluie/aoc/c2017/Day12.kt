@@ -5,9 +5,9 @@ import me.pluie.aoc.*
 // TODO
 fun main() = challenge(2017, 12) {
     val pos = l {
-        val (n, listRaw) = it.match("(\\d+) <-> (.+)")!!
-        val list = listRaw.split(", ").ints().toSet()
-        n.toInt() to list
+        it.match("(\\d+) <-> (.+)"){ (n, list) ->
+            n.toInt() to list.split(", ").ints().toSet()
+        }!!
     }.toMap()
 
     val seen = mutableSetOf<Int>()

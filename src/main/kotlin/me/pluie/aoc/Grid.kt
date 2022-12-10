@@ -1,6 +1,8 @@
 package me.pluie.aoc
 
 import java.util.*
+import kotlin.math.abs
+import kotlin.math.sqrt
 
 interface Grid<T>: Iterable<Pos<T>> {
     val width: Int
@@ -21,6 +23,17 @@ data class Pos<T>(val x: Int, val y: Int, val grid: Grid<T>) {
         set(value) { grid[x, y] = value }
 
     override fun toString(): String = "($x, $y)"
+
+    fun move(x: Int, y: Int): Pos<T>? {
+        val newX = this.x + x
+        val newY = this.y + y
+        return if (newX in 0 until grid.width && newY in 0 until grid.height)
+            copy(x = newX, y = newY)
+        else
+            null
+    }
+
+    fun move(offset: Pair<Int, Int>): Pos<T>? = move(offset.first, offset.second)
 
     fun n(): Pos<T>? = norths().firstOrNull()
     fun s(): Pos<T>? = souths().firstOrNull()
@@ -50,6 +63,12 @@ data class Pos<T>(val x: Int, val y: Int, val grid: Grid<T>) {
     fun cardinalNeighbors(): Sequence<Pos<T>> = sequenceOf(n(), e(), s(), w()).filterNotNull()
     fun ordinalNeighbors(): Sequence<Pos<T>> = sequenceOf(ne(), se(), sw(), nw()).filterNotNull()
     fun neighbors(): Sequence<Pos<T>> = sequenceOf(n(), ne(), e(), se(), s(), sw(), w(), nw()).filterNotNull()
+
+    fun manhattanDistance(o: Pos<T>): Int = abs(x - o.x) + abs(y - o.y)
+    fun euclideanDistance(o: Pos<T>): Float = sqrt(
+        (x.toFloat() - o.x.toFloat()).let { it * it } +
+        (y.toFloat() - o.y.toFloat()).let { it * it }
+    )
 }
 
 data class BitGrid(

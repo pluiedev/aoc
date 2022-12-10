@@ -15,6 +15,15 @@ interface Grid<T>: Iterable<Pos<T>> {
         (0 until width).toS().cartesian((0 until height).toS()).m { (x, y) ->
             Pos(x, y, this)
         }.iterator()
+
+    fun display(map: (Pos<T>) -> String) {
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                print(map(Pos(x, y, this)))
+            }
+            println()
+        }
+    }
 }
 
 data class Pos<T>(val x: Int, val y: Int, val grid: Grid<T>) {
@@ -116,4 +125,10 @@ fun CharSequence.bitGrid(map: (Char) -> Boolean): BitGrid {
         set[index] = map(c)
     }
     return BitGrid(width, height, set)
+}
+
+// extensions
+
+fun Grid<Boolean>.display() = display {
+    if (it.value) "██" else "  "
 }

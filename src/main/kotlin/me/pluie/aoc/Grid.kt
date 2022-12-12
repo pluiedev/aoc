@@ -14,12 +14,12 @@ interface Grid<T>: Iterable<GridPos<T>> {
             GridPos(x, y, this)
         }.iterator()
 
-    fun display(map: (GridPos<T>) -> String) = buildString {
-        append('\n')
+    fun display(map: (GridPos<T>) -> String) {
         for (y in yRange) {
-            for (x in xRange)
-                append(map(GridPos(x, y, this@Grid)))
-            append('\n')
+            for (x in xRange) {
+                print(map(GridPos(x, y, this)))
+            }
+            println()
         }
     }
 

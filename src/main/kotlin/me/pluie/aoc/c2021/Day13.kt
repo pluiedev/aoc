@@ -20,5 +20,5 @@ fun main() = challenge(2021, 13) {
         if (i == 0) submit { points.toSet().size }
     }
 
-    submit { BitGrid.fromPoints(points).display() }
+    submit { BitGrid.fromPoints(points).ocr() }
 }

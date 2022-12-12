@@ -6,7 +6,7 @@ import me.pluie.aoc.*
 fun main() = challenge(2017, 12) {
     val pos = l {
         it.match("(\\d+) <-> (.+)"){ (n, list) ->
-            n.toInt() to list.spacedCsv().ints().toSet()
+            n.toInt() to list.spacedCsv(::int).toSet()
         }!!
     }.toMap()
 

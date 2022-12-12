@@ -21,7 +21,7 @@ fun main() = challenge(2022, 11) {
     """.trimIndent()){ (items, op, by, test, tr, fl) ->
         val b = when (by) { "old" -> null; else -> by.long() }
         Monkey(
-            items.spacedCsv().longs().toMutableList(),
+            items.spacedCsv(::long).toMutableList(),
             when (op) {
                 "*" -> { a -> a * (b ?: a) }
                 "+" -> { a -> a + (b ?: a) }

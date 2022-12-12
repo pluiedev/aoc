@@ -37,6 +37,20 @@ data class BitGrid(
     }
 
     fun cardinality(): Int = data.cardinality()
+
+    companion object {
+        fun fromPoints(points: Iterable<Pos>): BitGrid {
+            val (xMin, xMax) = points.m { it.x }.minmax() ?: return empty()
+            val (yMin, yMax) = points.m { it.y }.minmax() ?: return empty()
+            val grid = BitGrid(xMin .. xMax, yMin .. yMax)
+            for (p in points) {
+                grid[p.x, p.y] = true
+            }
+            return grid
+        }
+        fun empty(): BitGrid = BitGrid(0..0, 0..0)
+
+    }
 }
 
 data class ListGrid<T>(

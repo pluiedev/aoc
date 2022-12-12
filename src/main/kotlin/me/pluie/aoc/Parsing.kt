@@ -15,6 +15,7 @@ fun <R> CharSequence.spaces(f: (String) -> R): Sequence<R> = spaces().m(f)
 fun CharSequence.ws(): Sequence<String> = splitToSequence(Regex("\\s+"))
 fun <R> CharSequence.ws(f: (String) -> R): Sequence<R> = ws().m(f)
 fun CharSequence.spacedCsv(): Sequence<String> = splitToSequence(", ")
+fun <R> CharSequence.spacedCsv(f: (String) -> R): Sequence<R> = spacedCsv().m(f)
 
 fun CharSequence.match(r: String) = Regex(r).find(this)?.destructured
 fun <R> CharSequence.match(r: String, transform: (MatchResult.Destructured) -> R) =
@@ -47,3 +48,4 @@ fun Sequence<String>.longs(radix: Int = 10): Sequence<Long> = m { it.toLong(radi
 fun Sequence<String>.floats(): Sequence<Float> = m { it.toFloat() }
 fun Sequence<String>.doubles(): Sequence<Double> = m { it.toDouble() }
 
+fun CharSequence.pos(): Pos = split2(",").let { (a, b) -> Pos(a.int(), b.int()) }

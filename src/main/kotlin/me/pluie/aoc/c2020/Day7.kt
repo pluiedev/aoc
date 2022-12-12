@@ -20,7 +20,7 @@ fun main() = challenge(2020, 7) {
         val list = if (listRaw == "no other bags")
             emptyList()
         else
-            listRaw.spacedCsv().m { s ->
+            listRaw.spacedCsv { s ->
                 s.match("(\\d+) (.+) bags?") { (n, subtype) ->
                     n.int() to subtype
                 }!!

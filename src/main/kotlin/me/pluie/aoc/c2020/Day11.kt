@@ -6,7 +6,7 @@ import java.util.*
 // TODO this actually doesn't work but, eh
 fun main() = challenge(2020, 11) {
     val mask = bitGrid { it == 'L' }
-    val cells = BitGrid(mask.width, mask.height)
+    val cells = BitGrid(mask.xRange, mask.yRange)
 
     var lastCells: BitSet? = null
 

@@ -11,7 +11,7 @@ fun main() = challenge(2022, 10) {
     var strength = 0
     var crt = 0
 
-    val grid = BitGrid(WIDTH, HEIGHT)
+    val grid = BitGrid(0 until WIDTH, 0 until HEIGHT)
 
     fun step() {
         if (++cycles % WIDTH == 20)

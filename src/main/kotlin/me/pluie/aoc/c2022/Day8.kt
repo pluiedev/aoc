@@ -2,7 +2,7 @@ package me.pluie.aoc.c2022
 import me.pluie.aoc.*
 
 fun main() = challenge(2022, 8) {
-    val trees = grid(Char::digitToInt)
+    val trees = grid { it.digitToInt() }
 
     submit {
         trees.count { p ->

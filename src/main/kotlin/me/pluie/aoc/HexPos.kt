@@ -2,7 +2,6 @@ package me.pluie.aoc
 
 import kotlin.math.abs
 
-
 data class HexPos(val q: Int, val r: Int) {
     val s: Int = -q - r
 
@@ -16,12 +15,12 @@ data class HexPos(val q: Int, val r: Int) {
     operator fun plus(o: HexPos) = copy(q = q + o.q, r = r + o.r)
     operator fun minus(o: HexPos) = copy(q = q - o.q, r = r - o.r)
 
-    fun distance(o: HexPos = ORIGIN): Int {
+    fun distance(o: HexPos = origin()): Int {
         val vec = this - o
         return (abs(vec.q) + abs(vec.q + vec.r) + abs(vec.r)) / 2
     }
 
     companion object {
-        val ORIGIN = HexPos(0, 0)
+        fun origin() = HexPos(0, 0)
     }
 }

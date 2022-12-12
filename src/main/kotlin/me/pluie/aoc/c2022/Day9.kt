@@ -6,7 +6,7 @@ const val SIZE = 400
 const val OFFSET = 200
 
 fun main() = challenge(2022, 9) {
-    val grid = BitGrid(SIZE, SIZE)
+    val grid = BitGrid(-200..200, -200..200)
 
     val movements = l { s ->
         val (dir, amt) = s.split(" ")
@@ -20,7 +20,7 @@ fun main() = challenge(2022, 9) {
     }
 
     fun simulate(knotsNum: Int): Int {
-        val knots = MutableList(knotsNum) { Pos(OFFSET, OFFSET, grid) }
+        val knots = MutableList(knotsNum) { GridPos.origin(grid) }
 
         movements.forEach { (dir, amt) ->
             for (i in 0 until amt) {

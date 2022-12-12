@@ -1,122 +1,68 @@
 package me.pluie.aoc
 
 import java.util.*
-import kotlin.math.abs
-import kotlin.math.sqrt
 
-interface Grid<T>: Iterable<Pos<T>> {
-    val width: Int
-    val height: Int
+interface Grid<T>: Iterable<GridPos<T>> {
+    val xRange: IntRange
+    val yRange: IntRange
 
     operator fun get(x: Int, y: Int): T
     operator fun set(x: Int, y: Int, value: T)
 
-    override fun iterator(): Iterator<Pos<T>> =
-        (0 until width).toS().cartesian((0 until height).toS()).m { (x, y) ->
-            Pos(x, y, this)
+    override fun iterator(): Iterator<GridPos<T>> =
+        xRange.toS().cartesian(yRange.toS()).m { (x, y) ->
+            GridPos(x, y, this)
         }.iterator()
 
-    fun display(map: (Pos<T>) -> String) {
-        for (y in 0 until height) {
-            for (x in 0 until width) {
-                print(map(Pos(x, y, this)))
+    fun display(map: (GridPos<T>) -> String) {
+        for (y in yRange) {
+            for (x in xRange) {
+                print(map(GridPos(x, y, this)))
             }
             println()
         }
     }
-}
 
-data class Pos<T>(val x: Int, val y: Int, val grid: Grid<T>) {
-    var value: T
-        get() = grid[x, y]
-        set(value) { grid[x, y] = value }
-
-    override fun toString(): String = "($x, $y)"
-
-    fun move(x: Int, y: Int): Pos<T>? {
-        val newX = this.x + x
-        val newY = this.y + y
-        return if (newX in 0 until grid.width && newY in 0 until grid.height)
-            copy(x = newX, y = newY)
-        else
-            null
-    }
-
-    fun move(offset: Pair<Int, Int>): Pos<T>? = move(offset.first, offset.second)
-
-    fun n(): Pos<T>? = norths().firstOrNull()
-    fun s(): Pos<T>? = souths().firstOrNull()
-    fun w(): Pos<T>? = wests().firstOrNull()
-    fun e(): Pos<T>? = easts().firstOrNull()
-    fun ne(): Pos<T>? = northeasts().firstOrNull()
-    fun sw(): Pos<T>? = southwests().firstOrNull()
-    fun nw(): Pos<T>? = northwests().firstOrNull()
-    fun se(): Pos<T>? = southeasts().firstOrNull()
-
-    fun norths(): Sequence<Pos<T>> = (y - 1 downTo 0).toS().m { Pos(x, it, grid) }
-    fun souths(): Sequence<Pos<T>> = (y + 1 until grid.height).toS().m { Pos(x, it, grid) }
-    fun wests(): Sequence<Pos<T>> = (x - 1 downTo 0).toS().m { Pos(it, y, grid) }
-    fun easts(): Sequence<Pos<T>> = (x + 1 until grid.width).toS().m { Pos(it, y, grid) }
-    fun northeasts(): Sequence<Pos<T>> =
-        (x + 1 until grid.width).toS().zip((y - 1 downTo 0).toS()) { x, y -> Pos(x, y, grid) }
-    fun southwests(): Sequence<Pos<T>> =
-        (x - 1 downTo 0).toS().zip((y + 1 until grid.height).toS()) { x, y -> Pos(x, y, grid) }
-    fun northwests(): Sequence<Pos<T>> =
-        (x - 1 downTo 0).toS().zip((y - 1 downTo 0).toS()) { x, y -> Pos(x, y, grid) }
-    fun southeasts(): Sequence<Pos<T>> =
-        (x + 1 until grid.width).toS().zip((y + 1 until grid.height).toS()) { x, y -> Pos(x, y, grid) }
-
-    fun cardinals(): Sequence<Sequence<Pos<T>>> = sequenceOf(norths(), easts(), souths(), wests())
-    fun ordinals(): Sequence<Sequence<Pos<T>>> = sequenceOf(northeasts(), southeasts(), southwests(), northwests())
-
-    fun cardinalNeighbors(): Sequence<Pos<T>> = sequenceOf(n(), e(), s(), w()).filterNotNull()
-    fun ordinalNeighbors(): Sequence<Pos<T>> = sequenceOf(ne(), se(), sw(), nw()).filterNotNull()
-    fun neighbors(): Sequence<Pos<T>> = sequenceOf(n(), ne(), e(), se(), s(), sw(), w(), nw()).filterNotNull()
-
-    fun manhattanDistance(o: Pos<T>): Int = abs(x - o.x) + abs(y - o.y)
-    fun euclideanDistance(o: Pos<T>): Float = sqrt(
-        (x.toFloat() - o.x.toFloat()).let { it * it } +
-        (y.toFloat() - o.y.toFloat()).let { it * it }
-    )
+    fun index(x: Int, y: Int): Int = (y - yRange.first) * (xRange.last - xRange.first + 1) + (x - xRange.first)
 }
 
 data class BitGrid(
-    override val width: Int,
-    override val height: Int,
-    val data: BitSet = BitSet(width * height)
+    override val xRange: IntRange,
+    override val yRange: IntRange,
+    val data: BitSet = BitSet((xRange.last - xRange.first + 1) * (yRange.last - yRange.first + 1))
 ): Grid<Boolean> {
-    override fun get(x: Int, y: Int) = data.get(y * width + x)
+    override fun get(x: Int, y: Int) = data.get(index(x, y))
     override fun set(x: Int, y: Int, value: Boolean) {
-        data.set(y * width + x, value)
+        data.set(index(x, y), value)
     }
 
     fun cardinality(): Int = data.cardinality()
 }
 
 data class ListGrid<T>(
-    override val width: Int,
-    override val height: Int,
+    override val xRange: IntRange,
+    override val yRange: IntRange,
     val data: MutableList<T>,
 ): Grid<T> {
-    override operator fun get(x: Int, y: Int): T = data[y * width + x]
+    override operator fun get(x: Int, y: Int): T = data[index(x, y)]
     override operator fun set(x: Int, y: Int, value: T) {
-        data[y * width + x] = value
+        data[index(x, y)] = value
     }
 }
 
-fun CharSequence.grid(): ListGrid<Char> = grid { it }
-fun <R> CharSequence.grid(map: (Char) -> R): ListGrid<R> {
+fun CharSequence.grid(offset: Pos = Pos.origin()): ListGrid<Char> = grid(offset) { it }
+fun <R> CharSequence.grid(offset: Pos = Pos.origin(), map: (Char) -> R): ListGrid<R> {
     val width = l().first().length
     val height = l().count()
 
     return ListGrid(
-        width,
-        height,
+        offset.x until width + offset.x,
+        offset.y until height + offset.y,
         l().fm { it.toS().m(map) }.toMutableList(),
     )
 }
 
-fun CharSequence.bitGrid(map: (Char) -> Boolean): BitGrid {
+fun CharSequence.bitGrid(offset: Pos = Pos.origin(), map: (Char) -> Boolean): BitGrid {
     val width = l().first().length
     val height = l().count()
     val set = BitSet()
@@ -124,7 +70,11 @@ fun CharSequence.bitGrid(map: (Char) -> Boolean): BitGrid {
     l().fm { it.asSequence() }.forEachIndexed { index, c ->
         set[index] = map(c)
     }
-    return BitGrid(width, height, set)
+    return BitGrid(
+        offset.x until width + offset.x,
+        offset.y until height + offset.y,
+        set
+    )
 }
 
 // extensions

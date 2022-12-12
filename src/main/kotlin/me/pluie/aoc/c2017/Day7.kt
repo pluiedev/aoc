@@ -26,7 +26,7 @@ fun main() = challenge(2017, 7) {
         val result = Regex("([a-z]+) \\((\\d+)\\)(?: -> (.+))?")
             .find(it)!!
         val (name, weight) = result.destructured
-        val children = result.groupValues.getOrNull(3)?.split(", ") ?: listOf()
+        val children = result.groupValues.getOrNull(3)?.spacedCsv()?.toL() ?: listOf()
 
         nodes[name] = Program(name, weight.toInt())
         name to children.filter { s -> s.isNotBlank() }

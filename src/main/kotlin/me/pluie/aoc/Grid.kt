@@ -10,7 +10,7 @@ interface Grid<T>: Iterable<GridPos<T>> {
     operator fun set(x: Int, y: Int, value: T)
 
     override fun iterator(): Iterator<GridPos<T>> =
-        xRange.toS().cartesian(yRange.toS()).m { (x, y) ->
+        yRange.toS().cartesian(xRange.toS()).m { (x, y) ->
             GridPos(x, y, this)
         }.iterator()
 

@@ -12,4 +12,5 @@ repositories {
 
 dependencies {
     implementation("com.ginsberg:cirkle:1.0.1")
+    implementation("org.jgrapht:jgrapht-core:1.5.1")
 }

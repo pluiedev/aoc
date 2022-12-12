@@ -31,5 +31,5 @@ fun main() = challenge(2022, 10) {
         }
     }
     submit { strength }
-    submit { grid.ocr() }
+    submit { grid.display() }
 }

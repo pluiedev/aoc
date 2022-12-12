@@ -1,6 +1,5 @@
 package me.pluie.aoc.c2022
 import me.pluie.aoc.*
-import kotlin.math.sign
 
 private const val WIDTH = 40
 private const val HEIGHT = 6
@@ -32,6 +31,5 @@ fun main() = challenge(2022, 10) {
         }
     }
     submit { strength }
-
-    grid.display()
+    submit { grid.ocr() }
 }

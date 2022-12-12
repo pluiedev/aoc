@@ -1,12 +1,7 @@
 package me.pluie.aoc
 
 import java.util.*
-import kotlin.io.path.Path
-import kotlin.io.path.exists
-import kotlin.io.path.readText
 import kotlin.streams.asSequence
-import kotlin.system.exitProcess
-
 
 operator fun <T> Iterable<T>.rem(other: Iterable<T>): Set<T> = this intersect other.toSet()
 
@@ -43,3 +38,11 @@ fun BitSet.copy() = clone() as BitSet
 fun <T> List<T>.copy() = toMutableList()
 @JvmName("copy2")
 fun <T> List<List<T>>.copy() = map { it.toMutableList() }.toMutableList()
+
+fun <T> MutableList<T>.drain(): MutableList<T> {
+    val old = toMutableList()
+    clear()
+    return old
+}
+
+fun impossible(): Nothing = error("impossible")

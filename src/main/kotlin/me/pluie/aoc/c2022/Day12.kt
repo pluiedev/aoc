@@ -5,9 +5,6 @@ import org.jgrapht.alg.shortestpath.BFSShortestPath
 import org.jgrapht.graph.DefaultWeightedEdge
 import org.jgrapht.graph.SimpleDirectedWeightedGraph
 
-inline fun <V, reified E> SimpleDirectedWeightedGraph() =
-    SimpleDirectedWeightedGraph<V, E>(E::class.java)
-
 fun main() = challenge(2022, 12) {
     data class Space(val c: Char) {
         val height: Int = when (c) {

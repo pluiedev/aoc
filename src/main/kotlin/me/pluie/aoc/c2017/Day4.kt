@@ -8,15 +8,10 @@ fun main() = challenge(2017, 4) {
     }
     submit {
         l().count {
-            !it
-                .spaces()
-                .map(String::toSortedSet)
+            !it.spaces(String::toSortedSet)
                 .withIndex()
                 .cartesianSquare()
-                .fold(false) { acc, (a, b) ->
-                    acc || (a.index != b.index && a.value == b.value)
-                }
+                .any { (a, b) -> a.index != b.index && a.value == b.value }
         }
     }
-
 }

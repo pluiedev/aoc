@@ -86,10 +86,6 @@ data class GridPos<T>(override val x: Int, override val y: Int, val grid: Grid<T
 
     override fun new(x: Int, y: Int) = copy(x = x, y = y)
     override fun toString() = "($x, $y)"
-
-    companion object {
-        fun <T> origin(grid: Grid<T>) = GridPos(0, 0, grid)
-    }
 }
 
 enum class Direction {

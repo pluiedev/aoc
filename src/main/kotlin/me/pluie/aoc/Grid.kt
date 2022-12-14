@@ -10,7 +10,15 @@ interface Grid<T>: Iterable<GridPos<T>> {
 
     operator fun get(x: Int, y: Int): T
     operator fun set(x: Int, y: Int, value: T)
-    fun fill(p1: Pos, p2: Pos, value: T)
+
+    fun <P: AbstractPos<P>> fill(p1: P, p2: P, value: T) {
+        for (y in min(p1.y, p2.y)..max(p1.y, p2.y))
+            for (x in min(p1.x, p2.x)..max(p1.x, p2.x))
+                this[x, y] = value
+    }
+
+    fun pos(x: Int, y: Int): GridPos<T> = GridPos(x, y, this)
+    fun origin(): GridPos<T> = GridPos(0, 0, this)
 
     override fun iterator(): Iterator<GridPos<T>> =
         yRange.toS().cartesian(xRange.toS()).m { (x, y) ->
@@ -38,7 +46,7 @@ data class BitGrid(
     override fun set(x: Int, y: Int, value: Boolean) {
         data.set(index(x, y), value)
     }
-    override fun fill(p1: Pos, p2: Pos, value: Boolean) {
+    override fun <P: AbstractPos<P>> fill(p1: P, p2: P, value: Boolean) {
         for (y in min(p1.y, p2.y)..max(p1.y, p2.y)) {
             setRow(min(p1.x, p2.x)..max(p1.x, p2.x), y, value)
         }
@@ -59,8 +67,7 @@ data class BitGrid(
             }
             return grid
         }
-        fun empty(): BitGrid = BitGrid(0..0, 0..0)
-
+        fun empty(): BitGrid = BitGrid(IntRange.EMPTY, IntRange.EMPTY)
     }
 }
 
@@ -73,10 +80,20 @@ data class ListGrid<T>(
     override operator fun set(x: Int, y: Int, value: T) {
         data[index(x, y)] = value
     }
-    override fun fill(p1: Pos, p2: Pos, value: T) {
-        for (y in min(p1.y, p2.y)..max(p1.y, p2.y))
-            for (x in min(p1.x, p2.x)..max(p1.x, p2.x))
-                data[index(x, y)] = value
+}
+
+data class SetGrid(
+    override val xRange: IntRange,
+    override val yRange: IntRange,
+    val data: MutableSet<Int> = mutableSetOf()
+): Grid<Boolean> {
+    override operator fun get(x: Int, y: Int): Boolean = index(x, y) in data
+    override operator fun set(x: Int, y: Int, value: Boolean) {
+        val index = index(x, y)
+        if (value)
+            data += index
+        else
+            data -= index
     }
 }
 
@@ -107,8 +124,23 @@ fun CharSequence.bitGrid(offset: Pos = Pos.origin(), map: (Char) -> Boolean): Bi
     )
 }
 
+fun CharSequence.setGrid(offset: Pos = Pos.origin(), map: (Char) -> Boolean): SetGrid {
+    val width = l().first().length
+    val height = l().count()
+    val set = mutableSetOf<Int>()
+
+    l().fm { it.asSequence() }.forEachIndexed { index, c ->
+        if (map(c)) set += index
+    }
+    return SetGrid(
+        offset.x until width + offset.x,
+        offset.y until height + offset.y,
+        set
+    )
+}
+
 // extensions
 
 fun Grid<Boolean>.display() = display {
-    if (it.value) "██" else "  "
+    if (it.value) "██" else "░░"
 }

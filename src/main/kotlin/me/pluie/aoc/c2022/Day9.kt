@@ -20,7 +20,7 @@ fun main() = challenge(2022, 9) {
     }
 
     fun simulate(knotsNum: Int): Int {
-        val knots = MutableList(knotsNum) { GridPos.origin(grid) }
+        val knots = MutableList(knotsNum) { grid.origin() }
 
         movements.forEach { (dir, amt) ->
             for (i in 0 until amt) {

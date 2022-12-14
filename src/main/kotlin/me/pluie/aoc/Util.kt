@@ -1,6 +1,7 @@
 package me.pluie.aoc
 
 import java.util.*
+import kotlin.math.*
 import kotlin.streams.asSequence
 
 operator fun <T> Iterable<T>.rem(other: Iterable<T>): Set<T> = this intersect other.toSet()

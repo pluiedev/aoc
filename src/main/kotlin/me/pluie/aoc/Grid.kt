@@ -1,6 +1,8 @@
 package me.pluie.aoc
 
 import java.util.*
+import kotlin.math.max
+import kotlin.math.min
 
 interface Grid<T>: Iterable<GridPos<T>> {
     val xRange: IntRange
@@ -8,6 +10,7 @@ interface Grid<T>: Iterable<GridPos<T>> {
 
     operator fun get(x: Int, y: Int): T
     operator fun set(x: Int, y: Int, value: T)
+    fun fill(p1: Pos, p2: Pos, value: T)
 
     override fun iterator(): Iterator<GridPos<T>> =
         yRange.toS().cartesian(xRange.toS()).m { (x, y) ->
@@ -35,6 +38,14 @@ data class BitGrid(
     override fun set(x: Int, y: Int, value: Boolean) {
         data.set(index(x, y), value)
     }
+    override fun fill(p1: Pos, p2: Pos, value: Boolean) {
+        for (y in min(p1.y, p2.y)..max(p1.y, p2.y)) {
+            setRow(min(p1.x, p2.x)..max(p1.x, p2.x), y, value)
+        }
+    }
+    fun setRow(x: IntRange, y: Int, value: Boolean) {
+        data.set(index(x.first, y), index(x.last, y) + 1, value)
+    }
 
     fun cardinality(): Int = data.cardinality()
 
@@ -61,6 +72,11 @@ data class ListGrid<T>(
     override operator fun get(x: Int, y: Int): T = data[index(x, y)]
     override operator fun set(x: Int, y: Int, value: T) {
         data[index(x, y)] = value
+    }
+    override fun fill(p1: Pos, p2: Pos, value: T) {
+        for (y in min(p1.y, p2.y)..max(p1.y, p2.y))
+            for (x in min(p1.x, p2.x)..max(p1.x, p2.x))
+                data[index(x, y)] = value
     }
 }
 
